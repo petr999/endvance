@@ -9,7 +9,7 @@
     "dump":[
         "/usr/local/bin/mysqldump", "-u", "%u", 
         "--opt", "--skip-extended-insert", "--skip-quick",
-        "--skip-lock-tables", "--create-options", "-c", "-p%p", "-B"
+        "--skip-lock-tables", "--create-options", "-c", "-p%p"
     ]
 },
 "bases":{

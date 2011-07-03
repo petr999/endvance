@@ -118,8 +118,31 @@ sub open_dump {
     }
     my $name = $$self{ 'name' };
     push @cmd, $name;
+    my $tables = $self->list_tables;
+    push @cmd, @$tables;
     open my $fh, '-|' => @cmd;
     return $fh;
+}
+
+# Object method
+# Returns tables to be backed up
+# Takes     :   n/a
+# Depends   :   on 'name' attribute
+# Returns   :   ArrayRef of tables
+sub list_tables {
+    my $self = shift;
+    my $name = $$self{ 'name' };
+    my $sql = "show tables from `$name`";
+    my $dbh = $$self{ 'endvance' }{ 'dbh' };
+    my $tables = $dbh->selectall_arrayref( $sql );
+    foreach (@$tables) { $_ = shift @$_ }
+    my $conf_bases = $$self{ 'endvance' }{ 'conf' }{ 'bases' };
+    my $conf_tables = $$conf_bases{ $name };
+    $tables = [
+        grep { not( defined $$conf_tables{$_}) or $$conf_tables{$_} ne 1 }
+        @$tables
+    ];
+    return $tables;
 }
 
 # Object method

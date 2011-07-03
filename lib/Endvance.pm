@@ -95,7 +95,7 @@ sub bases_all {
 # Returns   :   n/a
 sub commit {
     my $self = shift;
-    my @cmd  = $self->vcs_cmd;
+    my @cmd  = map { my @command = @$_; \@command; } $self->vcs_cmd;
     push @{ $cmd[ @cmd - 1 ] }, $self->vcs_msg;
     foreach (@cmd) { &eval_cmd($_) }
 }
@@ -119,7 +119,7 @@ sub eval_cmd {
         );
     }
     else {
-        croak( sprintf "child exited with value %d\n", $? >> 8 );
+        # warn( sprintf "child exited with value %d\n", $? >> 8 );
     }
 }
 
@@ -183,7 +183,7 @@ sub configure {
     my $fn   = shift;
     $fn //= shift @ARGV;
     $fn //= realpath( $FindBin::Bin . '/../etc' ) . '/' . $FindBin::Script
-        =~ s/\.[^\/\.]*$/.json/ r;
+        =~ s/\.[^\/\.]*$/.json/r;
     open my $fh, '<' => $fn;
     my $json = '';
     while (<$fh>) { $json .= $_ }
