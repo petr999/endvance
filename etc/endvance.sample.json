@@ -1,0 +1,30 @@
+{
+"config":{
+    "db":{
+        "dsn":"dbi:mysql:",
+        "host":"127.0.0.1",
+        "user":"endvance",
+        "pass":"ecnavdne"
+    },
+    "dump":[
+        "/usr/local/bin/mysqldump", "-u", "%u", 
+        "--opt", "--skip-extended-insert", "--skip-quick",
+        "--skip-lock-tables", "--create-options", "-c", "-p%p", "-B"
+    ]
+},
+"bases":{
+    "webgui":{
+        "IndexedSearch_docInfo":{
+            "ts":1
+        }
+    },
+    "skybill":{
+        "raw":1,
+        "clients":1,
+        "servers":1,
+        "details_daily":1
+    },
+    "information_schema":1,
+    "performance_schema":1
+}
+}
