@@ -127,11 +127,6 @@ sub tables {
     # Merge
     $tables = { %$tables, %$tables_conf };
 
-    # TODO: delete this
-    # Delete the tables noted as 1 ( for skipping ) in config
-    # my @tables_names = keys %$tables;
-    # foreach (@tables_names){ if( $$tables{$_} eq 1 ) { delete $$tables{$_} } }
-
     return $tables;
 }
 

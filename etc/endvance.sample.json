@@ -15,7 +15,9 @@
 "bases":{
     "webgui":{
         "IndexedSearch_docInfo":{
-            "dateIndexed":1
+            "dateIndexed":{
+                "value":"unix_timestamp()"
+            }
         }
     },
     "skybill":{
