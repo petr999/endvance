@@ -64,11 +64,12 @@ sub new {
 # Parses sql insert statement into the 4 elements ArrayRef
 # Takes     :   Str or Ref(Str) to parse
 # Returns   :   ArrayRefs of insert, table, keys and values rules
+#               Empty string if parsing has failed
 sub parse {
     my $self      = shift;
     my $hash      = $self->parse_str(@_);
     my @hash_keys = ( qw/insert table/, 'keys(?)', 'values' );
-    my $rv        = undef;
+    my $rv        = '';
     if ( defined $hash ) {
         foreach (@hash_keys) {
             croak("not defined: $_") unless defined $$hash{ $_ };

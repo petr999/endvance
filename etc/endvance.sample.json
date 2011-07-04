@@ -7,15 +7,15 @@
         "pass":"ecnavdne"
     },
     "dump":[
-        "/usr/local/bin/mysqldump", "-u", "%u", 
-        "--opt", "--skip-extended-insert", "--skip-quick",
-        "--skip-lock-tables", "--create-options", "-c", "-p%p"
+        "/usr/local/bin/mysqldump", "-u", "%u", "--opt", "--skip-extended-insert",
+        "--skip-dump-date", "--skip-comments",
+        "--skip-quick", "--skip-lock-tables", "--create-options", "-c", "-p%p"
     ]
 },
 "bases":{
     "webgui":{
         "IndexedSearch_docInfo":{
-            "ts":1
+            "dateIndexed":1
         }
     },
     "skybill":{

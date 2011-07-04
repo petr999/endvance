@@ -35,11 +35,20 @@ const my $COMMENT => 'Endvance backed up this at %F %T';
 sub perform {
     my $self = shift || __PACKAGE__->new();
     my $bases = $self->bases;
+
     while ( my ( $base_name => $base_hash ) = each(%$bases) ) {
         my $base = Endvance::Base->new( $self, $base_name => $base_hash );
         $base->backup;
     }
     $self->commit;
+
+    my $config = $$self{ 'conf' }{ 'config' };
+    if( defined($$config{ 'files_delete' }) and $$config{ 'files_delete' } ) {
+        while ( my ( $base_name => $base_hash ) = each(%$bases) ) {
+            my $base = Endvance::Base->new( $self, $base_name => $base_hash );
+            $base->file_remove;
+        }
+    }
 }
 
 # Object method
@@ -80,12 +89,13 @@ sub bases {
 # Object method
 # Reads bases list from storage
 # Takes     :   n/a
-# Returns   :   Hash of bases' names and empty hashes
+# Returns   :   HashRef of bases' names and empty hashes
 sub bases_all {
     my $self  = shift;
     my $dbh   = $$self{ 'dbh' };
     my $bases = $dbh->selectall_hashref( 'show databases' => 'Database' );
-    croak("No databases: $!") unless @{ [%$bases] } > 0;
+    croak( "No databases: $!" ) unless keys( %$bases ) > 0;
+    foreach my $base ( keys %$bases ) { $$bases{$base} = {} }
     return $bases;
 }
 
@@ -169,7 +179,7 @@ sub db_connect {
     else {
         croak("No host or socket configured for database connection");
     }
-    my $dbh = DBI->connect(@args);
+    my $dbh = DBI->connect(@args, { 'RaiseError' => 1 } );
     croak("Connect to database: $!") unless $dbh;
 }
 

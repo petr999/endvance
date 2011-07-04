@@ -17,7 +17,7 @@ use Const::Fast;
 use Try::Tiny;
 
 use Endvance;
-use Endvance::Base;
+use Endvance::Table;
 
 const my $tseq => [
     <<EOT,
@@ -54,9 +54,8 @@ for ( my $i = 0; $i < @$tseq; $i++ ) {
             my ( $insert, $table, $keys, $values ) =
                 @{ $parser->parse($str) };
             croak("Not parsed: $str") unless defined $insert;
-            my $cmp = Endvance::Base::implode_insert(
-                $insert => $table,
-                $keys   => $values,
+            my $cmp = Endvance::Table::implode_insert( 
+                [ $insert => $table, $keys => $values, ]
             );
             $rv = is(
                 $str => $cmp,

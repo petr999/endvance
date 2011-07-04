@@ -14,12 +14,10 @@ use Carp;
 
 use Test::More;
 use Try::Tiny;
-use Cwd qw/realpath/;
-use FindBin;
 
 use Endvance;
 
-my $conf = realpath( $FindBin::Bin . '/../etc' ) . '/endvance.sample.json';
+my $conf = realpath( dirname(__FILE__) . '/../etc' ) . '/endvance.sample.json';
 {
     try {
         my $hash     = Endvance->configure($conf);
