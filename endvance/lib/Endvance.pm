@@ -41,8 +41,8 @@ sub perform {
     }
     $self->commit;
 
-    my $config = $$self{ 'conf' }{ 'config' };
-    if( defined($$config{ 'files_delete' }) and $$config{ 'files_delete' } ) {
+    my $config = $$self{'conf'}{'config'};
+    if ( defined( $$config{'files_delete'} ) and $$config{'files_delete'} ) {
         while ( my ( $base_name => $base_hash ) = each(%$bases) ) {
             my $base = Endvance::Base->new( $self, $base_name => $base_hash );
             $base->file_remove;
@@ -63,11 +63,10 @@ sub bases {
 
     # Bases list from config
 
-    my $bases_conf = $$self{ 'conf' }{ 'bases' };
+    my $bases_conf = $$self{'conf'}{'bases'};
 
     # Wrong bases in config
-    my $bases_absent =
-        [ grep { not defined $$bases{ $_ } } keys %$bases_conf ];
+    my $bases_absent = [ grep { not defined $$bases{$_} } keys %$bases_conf ];
     croak( "Configured bases are absent in storage: " . join ', ',
         @$bases_absent )
         if @$bases_absent > 0;
@@ -78,7 +77,7 @@ sub bases {
     # Purge bases configured as 1
     while ( my ( $base => $base_val ) = each(%$bases_conf) ) {
         unless ( ref $base_val ) {
-            if ($base_val) { delete $$bases{ $base }; }
+            if ($base_val) { delete $$bases{$base}; }
         }
     }
 
@@ -91,9 +90,9 @@ sub bases {
 # Returns   :   HashRef of bases' names and empty hashes
 sub bases_all {
     my $self  = shift;
-    my $dbh   = $$self{ 'dbh' };
+    my $dbh   = $$self{'dbh'};
     my $bases = $dbh->selectall_hashref( 'show databases' => 'Database' );
-    croak( "No databases: $!" ) unless keys( %$bases ) > 0;
+    croak("No databases: $!") unless keys(%$bases) > 0;
     foreach my $base ( keys %$bases ) { $$bases{$base} = {} }
     return $bases;
 }
@@ -128,6 +127,7 @@ sub eval_cmd {
         );
     }
     else {
+
         # warn( sprintf "child exited with value %d\n", $? >> 8 );
     }
 }
@@ -150,7 +150,7 @@ sub new {
     my $class  = shift;
     my $conf   = $class->configure;
     my $parser = &parser;
-    my $dbh    = &db_connect( $$conf{ 'config' }{ 'db' } );
+    my $dbh    = &db_connect( $$conf{'config'}{'db'} );
     my $dir    = $class->dir($conf);
     my $self   = bless {
         'conf'   => $conf,
@@ -168,21 +168,21 @@ sub new {
 # Returns   :   database_handle
 sub db_connect {
     my $db_conf = shift;
-    my @args = map { $$db_conf{ $_ } } qw/dsn user pass/;
-    if ( defined $$db_conf{ 'host' } ) {
+    my @args = map { $$db_conf{$_} } qw/dsn user pass/;
+    if ( defined $$db_conf{'host'} ) {
         $args[0] .= "host=$$db_conf{ 'host' }";
     }
-    elsif ( defined $$db_conf{ 'socket' } ) {
+    elsif ( defined $$db_conf{'socket'} ) {
         $args[0] .= "mysql_socket=$$db_conf{ 'socket' }";
     }
     else {
         croak("No host or socket configured for database connection");
     }
     my $attrs = { 'RaiseError' => 1 };
-    if( defined $$db_conf{ 'attrs' } ) {
-        $attrs = { %$attrs, %{ $$db_conf{ 'attrs' } } };
+    if ( defined $$db_conf{'attrs'} ) {
+        $attrs = { %$attrs, %{ $$db_conf{'attrs'} } };
     }
-    my $dbh = DBI->connect(@args, $attrs );
+    my $dbh = DBI->connect( @args, $attrs );
     croak("Connect to database: $!") unless $dbh;
 }
 
@@ -223,10 +223,10 @@ sub parser {
 sub dir {
     my $self   = shift;
     my $config = shift;
-    $config //= $$self{ 'conf' }{ 'config' };
-    my $dir =
-        defined $$config{ 'dir' }
-        ? $$config{ 'dir' }
+    $config //= $$self{'conf'}{'config'};
+    my $dir
+        = defined $$config{'dir'}
+        ? $$config{'dir'}
         : realpath( $FindBin::Bin . '/../var' );
     return $dir;
 }
@@ -238,9 +238,9 @@ sub dir {
 # Returns   :   ArrayRef of ArrayRefs of command and parameters, the last is
 #               expected to be added the commit message as its argument
 sub vcs_cmd {
-    my $self = shift;
-    my $config = $$self{ 'conf' }{ 'config' };
-    my $vcs_commands = $$config{ 'vcs_commands' };
+    my $self         = shift;
+    my $config       = $$self{'conf'}{'config'};
+    my $vcs_commands = $$config{'vcs_commands'};
     return $vcs_commands;
 }
 

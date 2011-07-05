@@ -72,9 +72,9 @@ sub parse {
     my $rv        = '';
     if ( defined $hash ) {
         foreach (@hash_keys) {
-            croak("not defined: $_") unless defined $$hash{ $_ };
+            croak("not defined: $_") unless defined $$hash{$_};
         }
-        my @arr = map { $$hash{ $_ } } @hash_keys;
+        my @arr = map { $$hash{$_} } @hash_keys;
 
         # Columns' names
         if ( @{ $arr[2] } > 0 ) { $arr[2] = shift @{ $arr[2] } }

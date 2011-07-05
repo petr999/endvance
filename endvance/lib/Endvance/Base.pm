@@ -20,11 +20,11 @@ use Endvance::Table;
 sub new {
     my ( $class => $endvance, $name => $hash ) = @_;
     my $self = bless {
-        'db_fields'     => $hash,
-        'endvance'      => $endvance,
-        'name'          => $name,
+        'db_fields' => $hash,
+        'endvance'  => $endvance,
+        'name'      => $name,
     }, $class;
-    $$self{ 'filename' } = $self->filename;
+    $$self{'filename'} = $self->filename;
     return $self;
 }
 
@@ -33,13 +33,14 @@ sub new {
 # Takes     :   n/a
 # Returns   :   n/a
 sub backup {
-    my $self = shift;
-    my $write_fh   = $self->open_file;
+    my $self     = shift;
+    my $write_fh = $self->open_file;
     $self->backup_db_definition($write_fh);
     my $tables = $self->tables;
-    while( my ($table_name => $table_hash) = each %$tables ) {
+    while ( my ( $table_name => $table_hash ) = each %$tables ) {
         my $table = Endvance::Table->new(
-            $self => $write_fh, $table_name => $table_hash,
+            $self       => $write_fh,
+            $table_name => $table_hash,
         );
         $table->backup;
     }
@@ -53,17 +54,16 @@ sub backup {
 # Throws    :   on output error
 # Returns   :   n/a
 sub backup_db_definition {
-    my($self => $write_fh) = @_;
-    my $name = $$self{ 'name' };
-    my $dbh = $$self{ 'endvance' }{ 'dbh' };
-    my $sql = "show create database `$name`";
-    my ($ret_name => $definition) = @{ $dbh->selectall_arrayref($sql)->[0] };
-    $definition = "DROP DATABASE IF EXISTS `$name`;\n\n"
-        ."$definition;\n";
+    my ( $self => $write_fh ) = @_;
+    my $name = $$self{'name'};
+    my $dbh  = $$self{'endvance'}{'dbh'};
+    my $sql  = "show create database `$name`";
+    my ( $ret_name => $definition )
+        = @{ $dbh->selectall_arrayref($sql)->[0] };
+    $definition = "DROP DATABASE IF EXISTS `$name`;\n\n" . "$definition;\n";
     say $write_fh $definition;
     say $write_fh "USE `$name`;\n";
 }
-
 
 # Object method
 # Opens file to dump sql out to
@@ -74,7 +74,7 @@ sub backup_db_definition {
 # Returns   :   file handle
 sub open_file {
     my $self = shift;
-    my $fn = $$self{ 'filename' };
+    my $fn   = $$self{'filename'};
     open my $fh, '>' => $fn;
     return $fh;
 }
@@ -86,8 +86,8 @@ sub open_file {
 # Returns   :   Str file name to backup
 sub filename {
     my $self = shift;
-    my $dir  = $$self{ 'endvance' }{ 'dir' };
-    my $name = $$self{ 'name' };
+    my $dir  = $$self{'endvance'}{'dir'};
+    my $name = $$self{'name'};
     my $fn   = "$dir/$name.sql";
     return $fn;
 }
@@ -100,7 +100,7 @@ sub filename {
 # Returns   :   n/a
 sub file_remove {
     my $self = shift;
-    my $fn = $$self{ 'filename' };
+    my $fn   = $$self{'filename'};
     unlink $fn;
 }
 
@@ -114,14 +114,14 @@ sub tables {
     my $self = shift;
 
     # Two hashes: from database and from config
-    my $tables = $self->tables_all;
-    my $tables_conf = $$self{ 'db_fields' };
+    my $tables      = $self->tables_all;
+    my $tables_conf = $$self{'db_fields'};
 
     # Throw on non-existent table
-    while( my ($table => $fields) = each %$tables_conf ) {
+    while ( my ( $table => $fields ) = each %$tables_conf ) {
         croak(
-            "Non-existent table `$$self{ 'name' }`.`$table` is configured"
-        ) unless defined $$tables{$table};
+            "Non-existent table `$$self{ 'name' }`.`$table` is configured" )
+            unless defined $$tables{$table};
     }
 
     # Merge
@@ -136,14 +136,14 @@ sub tables {
 # Depends   :   on 'name', 'endvance' attributes
 # Returns   :   HashRef of tables and empty HashRefs
 sub tables_all {
-    my $self = shift;
-    my $name = $$self{ 'name' };
-    my $sql = "show tables from `$name`";
-    my $dbh = $$self{ 'endvance' }{ 'dbh' };
+    my $self       = shift;
+    my $name       = $$self{'name'};
+    my $sql        = "show tables from `$name`";
+    my $dbh        = $$self{'endvance'}{'dbh'};
     my $tables_raw = $dbh->selectall_hashref( $sql => "Tables_in_$name" );
-    my $tables = {};
-    while ( my( $table => $hash ) = each %$tables_raw ) {
-        $$tables{ $table } = {};
+    my $tables     = {};
+    while ( my ( $table => $hash ) = each %$tables_raw ) {
+        $$tables{$table} = {};
     }
     return $tables;
 }
