@@ -1,10 +1,13 @@
 {
 "config":{
     "db":{
-        "dsn":"dbi:mysql:",
+        "dsn":"dbi:mysql:mysql_enable_utf8=1;",
         "host":"127.0.0.1",
         "user":"endvance",
-        "pass":"ecnavdne"
+        "pass":"ecnavdne",
+        "attrs":{
+            "mysql_auto_reconnect":1
+        }
     },
     "dump":[
         "/usr/local/bin/mysqldump", "-u", "%u", "--opt", "--skip-extended-insert",

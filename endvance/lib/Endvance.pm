@@ -179,7 +179,11 @@ sub db_connect {
     else {
         croak("No host or socket configured for database connection");
     }
-    my $dbh = DBI->connect(@args, { 'RaiseError' => 1 } );
+    my $attrs = { 'RaiseError' => 1 };
+    if( defined $$db_conf{ 'attrs' } ) {
+        $attrs = { %$attrs, %{ $$db_conf{ 'attrs' } } };
+    }
+    my $dbh = DBI->connect(@args, $attrs );
     croak("Connect to database: $!") unless $dbh;
 }
 
