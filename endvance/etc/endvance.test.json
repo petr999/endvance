@@ -13,6 +13,14 @@
         "/usr/local/bin/mysqldump", "-u", "%u", "--opt", "--skip-extended-insert",
         "--skip-dump-date", "--skip-comments",
         "--skip-quick", "--skip-lock-tables", "--create-options", "-c", "-p%p"
+    ],
+    "vcs_commands":[
+        [
+            "/usr/local/bin/git","add","*"
+        ],
+        [
+            "/usr/local/bin/git","commit","-a","-m"
+        ]
     ]
 },
 "bases":{

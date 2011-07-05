@@ -24,12 +24,6 @@ use Endvance::Parser;
 
 our $VERSION = '0.01';
 
-# Default commands for VCS
-const my @GIT => (
-    ['/usr/local/bin/git' => qw/add */],
-    ['/usr/local/bin/git' => qw/commit -a -m/],
-);
-
 # Comment the commit with strftime();
 const my $COMMENT => 'Endvance backed up this at %F %T';
 
@@ -110,7 +104,7 @@ sub bases_all {
 # Returns   :   n/a
 sub commit {
     my $self = shift;
-    my @cmd  = map { my @command = @$_; \@command; } $self->vcs_cmd;
+    my @cmd  = ( @{ $self->vcs_cmd } );
     push @{ $cmd[ @cmd - 1 ] }, $self->vcs_msg;
     foreach (@cmd) { &eval_cmd($_) }
 }
@@ -240,11 +234,14 @@ sub dir {
 # Object method
 # Gets the VCS commands
 # Takes     :   n/a
-# Depends   :   on @GIT lexical constant
-# Returns   :   Array of ArrayRefs of command and parameters, the last is
+# Depends   :   on { 'conf' ]{ 'config' }{ 'vcs_commands' } attribute
+# Returns   :   ArrayRef of ArrayRefs of command and parameters, the last is
 #               expected to be added the commit message as its argument
 sub vcs_cmd {
-    return @GIT;
+    my $self = shift;
+    my $config = $$self{ 'conf' }{ 'config' };
+    my $vcs_commands = $$config{ 'vcs_commands' };
+    return $vcs_commands;
 }
 
 1;
@@ -418,6 +415,19 @@ default. This is a file in C<JSON> format, described like this:
             "--skip-dump-date", "--skip-comments",
             "--skip-quick", "--skip-lock-tables", "--create-options", "-c", "-p%p"
         ]
+
+        // Default commands for VCS
+        "vcs_commands":[
+            [
+                "/usr/local/bin/git","add","*"
+            ],
+            [
+                "/usr/local/bin/git","commit","-a","-m"
+            ]
+        ],
+
+        // Delete files after commit
+        "files_delete":1,
     },
 
     // Constant info about the databases
