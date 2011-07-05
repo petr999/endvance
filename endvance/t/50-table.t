@@ -20,7 +20,7 @@ const my $BASE_TO_DUMP => 'test04';
 const my $TABLE_TO_DUMP => 'test01';
 
 unless( @ARGV > 0 ) {
-    unshift @ARGV, realpath( dirname(__FILE__).'/../etc' ).'/endvance.json';
+    unshift @ARGV, realpath( dirname(__FILE__).'/../etc' ).'/endvance.test.json';
 }
 
 {

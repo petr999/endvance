@@ -14,7 +14,7 @@ use Test::More;
 use Try::Tiny;
 
 unless( @ARGV > 0 ) {
-    unshift @ARGV, realpath( dirname(__FILE__).'/../etc' ).'/endvance.json';
+    unshift @ARGV, realpath( dirname(__FILE__).'/../etc' ).'/endvance.test.json';
 }
 
 {

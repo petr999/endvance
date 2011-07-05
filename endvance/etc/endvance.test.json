@@ -1,0 +1,24 @@
+{
+"config":{
+    "db":{
+        "dsn":"dbi:mysql:",
+        "host":"127.0.0.1",
+        "user":"endvance",
+        "pass":"ecnavdne"
+    },
+    "dump":[
+        "/usr/local/bin/mysqldump", "-u", "%u", "--opt", "--skip-extended-insert",
+        "--skip-dump-date", "--skip-comments",
+        "--skip-quick", "--skip-lock-tables", "--create-options", "-c", "-p%p"
+    ]
+},
+"bases":{
+    "test04":{
+        "test01":{
+            "ts":1
+        }
+    },
+    "information_schema":1,
+    "performance_schema":1
+}
+}

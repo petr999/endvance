@@ -193,7 +193,7 @@ sub configure {
     my $fn   = shift;
     $fn //= shift @ARGV;
     $fn //= realpath( $FindBin::Bin . '/../etc' ) . '/' . $FindBin::Script
-        =~ s/\.[^\/\.]*$/.json/r;
+        =~ s/([^\/\.])(\.[^\/\.]*)?$/$1.json/r;
     open my $fh, '<' => $fn;
     my $json = '';
     while (<$fh>) { $json .= $_ }
